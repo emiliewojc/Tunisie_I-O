@@ -1,0 +1,72 @@
+  clear all
+	set more off
+	cap
+	estimates clear
+
+// globals to manage users
+		
+	global user 2 /* put 1 for Chaima and 2 for Emilie */
+
+	if $user == 1 {
+	global dropbox "Mets le lien pour aller vers la dropbox ici" // utilises la command cd
+	global person "Phuong"
+	}
+
+	if $user == 2 {
+	global dropbox "/Users/emiliewojcieszynski294gasyv/Dropbox"
+	global person = "Emilie"
+	}
+
+// define data repository
+
+	global data "$dropbox/COVID-firmes/Vulner-IO/Travaux_IO_Tunisie"
+
+
+*********************Simulation of a dataset************************************
+
+cd
+cd "data"
+
+
+ sysuse iot.dta, clear
+
+ format * %15.3fc
+ format * %15.3f
+
+ iot s1 s2 s3 , invt(1) fd(y1 y2 y3 y4 y5 y6) pall
+
+ iot s1 s2 s3 , invt(1) fd(y1 y2 y3 y4) export(exp) import(imp) pall
+
+ iot s1 s2 s3 , invt(2) fd(y1 y2 y3 y4) export(exp) import(imp) pall
+
+ iot s1 s2 s3 , fd(fd)
+
+ iot s1 s2 s3 , fd(fd) ml(ml) format(10.3f)
+
+ iot s1 s2 s3 , fd(fd) ml(ml) list
+ iot s1 s2 s3 , fd(fd) ml(ml) list save(D:\iot)
+
+ iot s1 s2 s3 , fd(fd) fc(yh) ml(ml)
+ iot s1 s2 s3 , fd(fd) fc(yh) ml(ml) list
+ iot s1 s2 s3 , fd(fd) fc(yh) ml(ml) save(D:\iot)
+ iot s1 s2 s3 , fd(fd) fc(yh) ml(ml) save(D:\iot) list
+
+ matlist e(a)
+ matlist e(check)
+ matlist e(ia)
+ matlist e(adjia)
+ matlist e(invia)
+ matlist e(ml)
+ matlist e(mliou)
+ matlist e(mliot)
+ matlist e(iot)
+ matlist e(iott)
+ matlist e(ioth)
+
+ ereturn list
+
+ matrix Aij_= e(a)
+ svmat  Aij_
+
+ matrix Mij_= e(invia)
+ svmat  Mij_
