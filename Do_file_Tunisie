@@ -8,7 +8,7 @@
 	global user 2 /* put 1 for Chaima and 2 for Emilie */
 
 	if $user == 1 {
-	global dropbox "Mets le lien pour aller vers la dropbox ici" // utilises la command cd
+	global dropbox "Mets le lien pour aller vers la dropbox ici" // utilises la commande cd
 	global person "Phuong"
 	}
 
