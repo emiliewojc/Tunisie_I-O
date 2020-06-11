@@ -9,7 +9,7 @@
 
 	if $user == 1 {
 	global dropbox "Mets le lien pour aller vers la dropbox ici" // utilises la commande cd
-	global person "Phuong"
+	global person "Chaima"
 	}
 
 	if $user == 2 {
