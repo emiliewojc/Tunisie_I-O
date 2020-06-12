@@ -1,4 +1,4 @@
-  clear all
+clear all
 	set more off
 	cap
 	estimates clear
@@ -21,35 +21,72 @@
 
 	global data "$dropbox/COVID-firmes/Vulner-IO/Travaux_IO_Tunisie"
 
-
-*********************Simulation of a dataset************************************
+********************************************************************************
+*Shehata, Emad Abd Elmessih & Sahra Khaleel A. Mickaiel (2015)
+*IOT: "Stata Module to Estimate Leontief Input-Output Table (IOT)"
+********************************************************************************
 
 cd
 cd "data"
 
+import excel "$dropbox/COVID-firmes/Vulner-IO/Travaux_IO_Tunisie/Tableau.xlsx", sheet("Feuil1") firstrow clear
+*save "/Users/emiliewojcieszynski294gasyv/Desktop/Matrice.dta"
 
- sysuse iot.dta, clear
+ *use Matrice.dta
 
- format * %15.3fc
- format * %15.3f
+ *format * %15.3fc
+ *format * %15.3f
+ 
 
- iot s1 s2 s3 , invt(1) fd(y1 y2 y3 y4 y5 y6) pall
+ foreach var of varlist  A01 - y6 {
+ 
+      replace `var' = 0 if (`var' == .)
+ }
+ 
+ 
+/*
+** Final Demand =
 
- iot s1 s2 s3 , invt(1) fd(y1 y2 y3 y4) export(exp) import(imp) pall
++ Household Final Consumption Expenditure // y1 // CF Ménages
++ Government Final Consumption Expenditure // y2 // CF Administrations
++ NPISHs Final Consumption Expenditure // Non-profit institutions serving households
++ Gross Fixed Capital formation //y3 // FBCF
++ Changes in Inventories // y4 // variation des stocks
++ Export y5 // Exportations
+** Total Final Demand = Final Demand - Import
 
- iot s1 s2 s3 , invt(2) fd(y1 y2 y3 y4) export(exp) import(imp) pall
+Leontief Inverse Matrix Type:
+1- Non-Competitive Import Type: {(I-A)^-1} (Simplified Model excluding Import)
+2- Competitive Import Type: {[I-(I-M)A]^-1}
+*/
 
- iot s1 s2 s3 , fd(fd)
+keep in 1/22
 
- iot s1 s2 s3 , fd(fd) ml(ml) format(10.3f)
+gen fd = y1 + y2 + y3 + y4 + y5 - y6
 
- iot s1 s2 s3 , fd(fd) ml(ml) list
- iot s1 s2 s3 , fd(fd) ml(ml) list save(D:\iot)
+* I - iot command
+ 
+global sector A01 C15 C16 D17 D20 E23 E24 E26 F27 B11 B13 G40 G41 H45 I50 I51 I55 I60 I64 I65 I70 J75 
 
- iot s1 s2 s3 , fd(fd) fc(yh) ml(ml)
- iot s1 s2 s3 , fd(fd) fc(yh) ml(ml) list
- iot s1 s2 s3 , fd(fd) fc(yh) ml(ml) save(D:\iot)
- iot s1 s2 s3 , fd(fd) fc(yh) ml(ml) save(D:\iot) list
+ iot $sector , invt(1) fd(y1 y2 y3 y4 y5 y6) pall
+
+ iot $sector , invt(1) fd(y1 y2 y3 y4) export(exp) import(imp) pall
+
+ iot $sector , invt(2) fd(y1 y2 y3 y4) export(exp) import(imp) pall
+
+ iot $sector , fd(fd)
+
+ iot $sector , fd(fd) ml(ml) format(10.3f)
+
+ iot $sector , fd(fd) ml(ml) list
+ iot $sector , fd(fd) ml(ml) list save(D:\iot)
+
+ iot $sector , fd(fd) fc(yh) ml(ml)
+ iot $sector , fd(fd) fc(yh) ml(ml) list
+ iot $sector , fd(fd) fc(yh) ml(ml) save(D:\iot)
+ iot $sector , fd(fd) fc(yh) ml(ml) save(D:\iot) list
+ 
+* II - matlist command
 
  matlist e(a)
  matlist e(check)
